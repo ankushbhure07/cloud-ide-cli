@@ -1,0 +1,39 @@
+{
+  "name": "cloud-ide-cli",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1"
+  },
+  "bin": {
+    "cide": "cli.js"
+  },
+  "description": "The Cloud IDE CLI (Command Line Interface) is a powerful tool designed to streamline the process of initializing and managing projects within a cloud-based Integrated Development Environment. This command-line tool empowers developers to efficiently set up and configure projects for either API or UI development, offering a seamless and customizable experience.",
+  "main": "cli.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankushbhure07/cloud-ide-cli.git"
+  },
+  "keywords": [
+    "#CloudIDE",
+    "#CLI",
+    "#DeveloperTools",
+    "#ProjectManagement",
+    "#CodingEfficiency",
+    "#WorkflowOptimization",
+    "#nodeJSTemplate",
+    "#reactTemplate",
+    "#CliBaseTesting"
+  ],
+  "author": "Ankush Shivlal Bhure",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ankushbhure07/cloud-ide-cli/issues"
+  },
+  "homepage": "https://github.com/ankushbhure07/cloud-ide-cli#readme"
+}

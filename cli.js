@@ -104,38 +104,47 @@ async function checkUserLoggedIn(callbackProcess) {
 }
 
 async function openBrowserForAccountCreation(open, random_key) {
-  // URL to navigate
-  const url = `https://console.cloudidesys.com/${open}?id=${random_key}`; // Replace with your registration URL or desired URL
-  execSync(`start ${url}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error('Error opening browser:', error);
-    }
-  });
-  // Wait for 2 min for login successfull response
-  setTimeout(async () => {
-    loginStatusVerify().then((response) => {
-      if (response) {
-        console.log(`Login Successfull ${response.print_name}, Enjoy CloudIDE CLI!`);
-      } else {
-        console.log("Somthing Went Wrong, Please Try Again!");
+  try {
+    // URL to navigate
+    const url = `https://console.cloudidesys.com/${open}?id=${random_key}`; // Replace with your registration URL or desired URL
+    execSync(`start ${url}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error('Error opening browser:', error);
       }
-    })
-  }, (1500 * 60))
+    });
+    // Wait for 2 min for login successfull response
+    setTimeout(async () => {
+      loginStatusVerify().then((response) => {
+        if (response) {
+          console.log(`Login Successfull ${response.print_name}, Enjoy CloudIDE CLI!`);
+        } else {
+          console.log("Somthing Went Wrong, Please Try Again!");
+        }
+      })
+    }, (1500 * 60))
+  } catch (error) {
+    console.log("Somthing Went Wrong, Please Check your internet Connection!");
+  }
 }
 
 const loginStatusVerify = () => {
   return new Promise(async (resolve, reject) => {
-    let login_response = await axios.get(`https://console.cloudidesys.com/cli?id=${random_key}&usename=${process?.env?.CLOUD_IDE_USERNAME}&secret_key=${process?.env?.CLOUD_IDE_SECRET_KEY}`);
-    if (login_response) {
-      if (login_response.data.username && login_response.data.secret_key) {
-        // Set username and secret key for further processing
-        process.env.CLOUD_IDE_USERNAME = login_response.data.username;
-        process.env.CLOUD_IDE_SECRET_KEY = login_response.data.secret_key;
-        resolve(login_response.data);
+    try {
+      let login_response = await axios.get(`https://console.cloudidesys.com/cli?id=${random_key}&usename=${process?.env?.CLOUD_IDE_USERNAME}&secret_key=${process?.env?.CLOUD_IDE_SECRET_KEY}`);
+      if (login_response) {
+        if (login_response.data.username && login_response.data.secret_key) {
+          // Set username and secret key for further processing
+          process.env.CLOUD_IDE_USERNAME = login_response.data.username;
+          process.env.CLOUD_IDE_SECRET_KEY = login_response.data.secret_key;
+          resolve(login_response.data);
+        } else {
+          resolve(false);
+        }
       } else {
         resolve(false);
       }
-    } else {
+    } catch (error) {
+      console.log("Somthing Went Wrong, Please Check your internet Connection!");
       resolve(false);
     }
   });

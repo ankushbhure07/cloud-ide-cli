@@ -9,7 +9,13 @@ async function startProject() {
             start_command = "npx tsc && node ./dist/server.js";
         }
         if (start_command != "") {
-            if (execSync(start_command,
+            console.log('==============================Cloud Ide CLI Welcomes you==============================');
+            console.log(`You are using `+ cide.templete + ` Templete!!!`)
+            console.log('');
+            console.log(cide.description);
+            console.log('');
+            console.log(start_command)
+            if (execSync(start_command, {stdio: 'inherit'},
                 (error, stdout, stderr) => {
                     if (error) {
                         console.error('Error starting project:', error);

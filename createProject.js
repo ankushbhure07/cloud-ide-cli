@@ -4,6 +4,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
+const AdmZip = require('adm-zip');
 
 async function createProject(projectName, template) {
   console.log(`Creating a new ${template} project named ${projectName}`);
@@ -22,7 +23,7 @@ async function createProject(projectName, template) {
     await fetchProjectStructureFromAPI(template, projectName, destinationPath);
 
     // Install dependencies
-    installDependencies();
+    installDependencies(projectName);
 
     console.log(`${template} project created successfully!`);
   } else {
@@ -31,35 +32,35 @@ async function createProject(projectName, template) {
 }
 
 async function fetchProjectStructureFromAPI(template, projectName, destinationPath) {
-  const apiUrl = `https://console.cloudidesys.com/cli/${template}`; // API endpoint for templete strcture
+  const apiUrl = `https://console.cloudidesys.com/cli/${template}.zip`; // API endpoint for downloading the zip file
 
-  // try {
-  const response = await axios.get(apiUrl);
-  const folderStructure = response.data; // Assuming the API returns the folder structure in the response data
+  try {
+    const response = await axios({
+      method: 'GET',
+      url: apiUrl,
+      responseType: 'arraybuffer', // Set the response type to arraybuffer
+    });
 
-  // Create project structure
-  createFolderStructure(folderStructure, projectName);
+    // Save the downloaded zip file
+    const zipFilePath = path.join(destinationPath, `${projectName}.zip`);
+    fs.writeFileSync(zipFilePath, response.data);
 
-  console.log(`Project '${projectName}' created Successfully for ${template}.`);
-  // } catch (err) {
-  //   console.error('Error fetching folder structure:', err.message);
-  // }
-}
+    // Unzip the downloaded file to create project structure
+    const zip = new AdmZip(zipFilePath);
+    zip.extractAllTo(destinationPath, true);
 
-function createFolderStructure(folderStructure, workDir) {
-  // Create project structure
-  for (const [dirPath, files] of Object.entries(folderStructure)) {
-    let setWorDir = path.join(workDir, dirPath);
-    if (dirPath.indexOf(`.`) >= 0) {
-      fs.writeFileSync(setWorDir, files);
-    } else {
-      fs.mkdirSync(setWorDir);
-      createFolderStructure(files, setWorDir);
-    }
+    // Remove the downloaded zip file after extraction
+    fs.unlinkSync(zipFilePath);
+
+    console.log(`Project '${projectName}' created successfully for ${template}.`);
+  } catch (err) {
+    console.error('Error fetching or extracting project structure:', err.message);
   }
 }
 
-function installDependencies() {
+function installDependencies(projectName) {
+  /* Switch to working directory */
+  process.chdir(projectName);
   // Mock dependency installation logic
   // Replace this with your actual dependency installation logic
   console.log('Installing dependencies...');

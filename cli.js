@@ -5,10 +5,11 @@
 const { program } = require('commander');
 const createProject = require('./createProject');
 const startProject = require('./startProject');
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 const readline = require('readline');
 const axios = require('axios');
 const { resolve } = require('path');
+const { watch } = require('fs');
 // Set env using Dotenv
 require(`dotenv`).config();
 
@@ -34,6 +35,27 @@ program
     checkUserLoggedIn(() => {
       startProject();
     })
+  });
+// update the project 
+program
+  .command('watch')
+  .description('Watch any running  Cloud IDE project')
+  .action(() => {
+    /* detect file change */
+    console.log('Watcher Started!....');
+    /* Switch to working directory */
+    process.chdir('./src/');
+    let status = 0;
+    watch("./", { recursive: true }, (eventType, filename) => {
+      if (status == 0) {
+        status = 1;
+        setTimeout(() => {
+          status = 0;
+        }, 2000)
+        console.log("changed " + filename);
+        exec('npx tsc');
+      }
+    });
   });
 
 

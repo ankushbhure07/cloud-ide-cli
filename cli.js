@@ -36,27 +36,6 @@ program
       startProject();
     })
   });
-// update the project 
-program
-  .command('watch')
-  .description('Watch any running  Cloud IDE project')
-  .action(() => {
-    /* detect file change */
-    console.log('Watcher Started!....');
-    /* Switch to working directory */
-    process.chdir('./src/');
-    let status = 0;
-    watch("./", { recursive: true }, (eventType, filename) => {
-      if (status == 0) {
-        status = 1;
-        setTimeout(() => {
-          status = 0;
-        }, 2000)
-        console.log("changed " + filename);
-        exec('npx tsc');
-      }
-    });
-  });
 
 
 // for every command check user is logged in or not

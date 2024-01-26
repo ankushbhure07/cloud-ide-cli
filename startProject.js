@@ -7,8 +7,7 @@ async function startProject() {
     if (cide) {
         let start_command = "";
         if (cide.templete === 'node') {
-            start_command = "npx tsc && npx nodemon ./dist/server.js";
-            writeFileSync('./nodemon.json', `{ "watch": ["server.js"], "exec": "node" }`);
+            start_command = "npx ts-node-dev src/server.js";
         }
         if (start_command != "") {
             console.log('==============================Cloud Ide CLI Welcomes you==============================');
